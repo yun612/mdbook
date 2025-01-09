@@ -1,0 +1,32 @@
+{
+  "name": "mdbook-repl-vue",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@monaco-editor/loader": "^1.4.0",
+    "mdbook-repl-vue": "file:",
+    "monaco-editor": "^0.45.0",
+    "monaco-editor-vue3": "^0.1.10",
+    "pinia": "^2.1.7",
+    "pyodide": "^0.26.4",
+    "vue": "^3.3.11",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@babel/standalone": "^7.23.7",
+    "@types/node": "^20.10.6",
+    "@vitejs/plugin-vue": "^4.5.2",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.32",
+    "tailwindcss": "^3.4.0",
+    "typescript": "^5.2.2",
+    "vite": "^5.0.8",
+    "vue-tsc": "^1.8.25"
+  }
+}
