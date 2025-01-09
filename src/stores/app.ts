@@ -8,23 +8,23 @@ import type { Message } from '@/types/message'
 
 // Import workers
 const pythonWorker = new Worker(new URL('../workers/python-worker.js', import.meta.url), { type: 'classic' })
-const typescriptWorker = new Worker(new URL('../workers/typescript-worker.js', import.meta.url), { type: 'classic' })
-const javascriptWorker = new Worker(new URL('../workers/javascript-worker.js', import.meta.url), { type: 'classic' })
+// const typescriptWorker = new Worker(new URL('../workers/typescript-worker.js', import.meta.url), { type: 'classic' })
+// const javascriptWorker = new Worker(new URL('../workers/javascript-worker.js', import.meta.url), { type: 'classic' })
 
 const workers = {
   python: pythonWorker,
-  typescript: typescriptWorker,
-  javascript: javascriptWorker
+  // typescript: typescriptWorker,
+  // javascript: javascriptWorker
 }
 
 const defaultOutputs: OutputsType = {
   python: { status: 'loading', data: [] },
-  typescript: { status: 'loading', data: [] },
-  javascript: { status: 'loading', data: [] }
+  // typescript: { status: 'loading', data: [] },
+  // javascript: { status: 'loading', data: [] }
 }
 
 const defaultEditorOptions: EditorType = {
-  theme: 'light',
+  theme: 'dark',
   lang: 'python',
   code: defaultCodes.python,
   defaultCode: defaultCodes.python,
@@ -77,7 +77,7 @@ export const useAppStore = defineStore('app', () => {
     if (outputs.value[editor.value.lang].status === 'loading' || outputs.value[editor.value.lang].status === 'running') return
 
     outputs.value[editor.value.lang] = { status: 'running', data: [] }
-    worker.value.postMessage({ lang: editor.value.lang, code: editor.value.code })
+    worker.value.postMessage({ lang: editor.value.lang, code:  editor.value.code   })
   }
 
   function clearOutput() {
@@ -97,7 +97,7 @@ export const useAppStore = defineStore('app', () => {
   watch(() => editor.value.lang, (newLang: LanguageType) => {
     // Update worker reference
     worker.value = workers[newLang]
-    
+
     // Set up message handler for the new worker
     worker.value.onmessage = (event: MessageEvent) => {
       const { lang, output } = event.data
