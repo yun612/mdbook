@@ -4,13 +4,22 @@ import MonacoEditor from 'monaco-editor-vue3'
 import { useClipboard } from '@vueuse/core'
 import { useAppStore } from '@/stores/app'
 
+import { renderMarkdown } from '@/composables/render'
+
 const { copy, copied } = useClipboard({})
 const store = useAppStore()
 const currentOutput = computed(() => store.outputs[store.editor.lang])
 
-const initCode = '# Default python code\n\nprint("Hello, python")'
-const code = ref(store.editor.code || initCode)
+const initcode = ref(`count = 0
+while (count < 9):
+   print('The count is:', count)
+   count = count + 1
+ 
+print("Good bye!")
+`)
 
+// const code = ref(store.editor.code)
+const code = ref(initcode.value)
 
 watch(() => store.editor.code, (newCode) => {
   code.value = newCode
@@ -27,6 +36,7 @@ const editorOptions = {
   lineNumbersMinChars: 2,
   renderLineHighlight: 'all',
   lineDecorationsWidth: 0,
+  theme: 'dark',
 }
 const handleChange = (value: string) => {
   store.updateEditor({ code: value })
@@ -42,10 +52,9 @@ const handleKeyDown = (e: KeyboardEvent) => {
 
 onMounted(async () => {
   window.addEventListener('keydown', handleKeyDown)
-  await nextTick(); // 确保 DOM 更新完成
-  if (store.editor.code) {
-    code.value = store.editor.code;
-  }
+  await nextTick()
+  const resp = renderMarkdown(initcode.value)
+  console.log(resp,'resp')
 })
 
 onUnmounted(() => {
@@ -53,12 +62,9 @@ onUnmounted(() => {
 })
 
 function clearOutput() {
-  store.clearOutput()
-  store.editor.code = initCode
-  code.value = initCode
+  code.value = initcode.value
 }
 </script>
-
 
 <template>
   <div class="dark:bg-zinc-800 p-5">
@@ -109,9 +115,9 @@ function clearOutput() {
         </button>
       </div>
     </div>
-    <p class="border-t my-2 border-gray-400"></p>
-    <MonacoEditor class="min-h-40" language="python" v-model:value="code" :options="editorOptions"
-      :theme="store.editor.theme === 'dark' ? 'vs-dark' : 'vs'" @change="handleChange" />
+    <p class="border-t my-2 border-gray-400">{{ code }}</p>
+    <MonacoEditor class="min-h-80" language="python" v-model:value="code" :options="editorOptions"
+      @change="handleChange" />
 
     <div class="output-wrapper dark:bg-zinc-900 py-3">
       <div v-if="currentOutput.data.length === 0" class="text-center text-gray-300">

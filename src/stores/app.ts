@@ -8,23 +8,24 @@ import type { Message } from '@/types/message'
 
 // Import workers
 const pythonWorker = new Worker(new URL('../workers/python-worker.js', import.meta.url), { type: 'classic' })
-// const typescriptWorker = new Worker(new URL('../workers/typescript-worker.js', import.meta.url), { type: 'classic' })
-// const javascriptWorker = new Worker(new URL('../workers/javascript-worker.js', import.meta.url), { type: 'classic' })
+const typescriptWorker = new Worker(new URL('../workers/typescript-worker.js', import.meta.url), { type: 'classic' })
+const javascriptWorker = new Worker(new URL('../workers/javascript-worker.js', import.meta.url), { type: 'classic' })
 
 const workers = {
   python: pythonWorker,
-  // typescript: typescriptWorker,
-  // javascript: javascriptWorker
+  typescript: typescriptWorker,
+  javascript: javascriptWorker
 }
 
 const defaultOutputs: OutputsType = {
   python: { status: 'loading', data: [] },
-  // typescript: { status: 'loading', data: [] },
-  // javascript: { status: 'loading', data: [] }
+  typescript: { status: 'loading', data: [] },
+  javascript: { status: 'loading', data: [] }
 }
 
 const defaultEditorOptions: EditorType = {
   theme: 'dark',
+  monacoTheme: 'dark',
   lang: 'python',
   code: defaultCodes.python,
   defaultCode: defaultCodes.python,
@@ -81,7 +82,10 @@ export const useAppStore = defineStore('app', () => {
   }
 
   function clearOutput() {
+    // 重置当前语言的输出
     outputs.value[editor.value.lang] = { status: 'idle', data: [] }
+    // 同时重置代码为默认代码
+    editor.value.code = editor.value.defaultCode
   }
 
   function updateEditor(newEditor: Partial<EditorType>) {
